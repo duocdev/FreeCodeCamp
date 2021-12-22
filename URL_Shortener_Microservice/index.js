@@ -14,12 +14,8 @@ app.get('/', function (req, res) {
 
 const shortlink = [];
 
-const logger = (req, res, next) => {
-    console.log(shortlink);
-    next();
-}
 
-app.post('/api/shorturl', logger, (req, res) => {
+app.post('/api/shorturl', (req, res) => {
     const url = req.body.url;
     if (url.indexOf('http') === -1) {
         res.json({ error: 'invalid url' })
@@ -40,7 +36,7 @@ app.post('/api/shorturl', logger, (req, res) => {
     }
 });
 
-app.get('/api/shorturl/:id', logger, (req, res) => {
+app.get('/api/shorturl/:id', (req, res) => {
     const id = req.params.id;
     if (id < shortlink.length) {
         res.redirect(shortlink[id]);
