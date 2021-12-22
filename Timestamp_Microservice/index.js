@@ -1,28 +1,54 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const port = 3000;
 
-app.get('/api', (req, res) => {
-    const now = new Date();
-    const unix = now.getTime();
-    const utc = now.toGMTString();
-    res.json({ unix: unix, utc: utc });
-})
+app.use(cors());
 
-app.get('/api/:date', (req, res) => {
-    if (isNaN(req.params.date)) {
-        const date = new Date(req.params.date);
-        const unix = date.getTime();
-        const utc = date.toGMTString();
-        res.json({ unix: unix, utc: utc });
+app.get("/api/:date?", (req, res) => {
+    let input = req.params.date;
+    if (input === undefined) {
+        res.json({
+            "unix": new Date().getTime(),
+            "utc": new Date().toUTCString()
+        });
     } else {
-        const unix = Number(req.params.date);
-        const date = new Date(unix);
-        const utc = date.toGMTString();
-        res.json({ unix: unix, utc: utc });
-    }
-})
+        let date_string = new Date(input);
+        if (date_string.toString() === "Invalid Date") {
+            if (input.includes('-')) {
+                const date = new Date(input);
+                if (date.toString() === 'Invalid Date') {
+                    res.json({
+                        "error": "Invalid Date"
+                    });
+                } else {
 
+                    res.json({
+                        "unix": date.getTime(),
+                        "utc": date.toUTCString()
+                    });
+                }
+            } else {
+                const date = new Date(parseInt(input));
+                if (date.toString() === 'Invalid Date') {
+                    res.json({
+                        "error": "Invalid Date"
+                    });
+                } else {
+                    res.json({
+                        "unix": date.getTime(),
+                        "utc": date.toUTCString()
+                    });
+                }
+            }
+        } else {
+            res.json({
+                "unix": date_string.getTime(),
+                "utc": date_string.toUTCString()
+            });
+        }
+    }
+});
 
 
 
