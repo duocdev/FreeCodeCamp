@@ -3,7 +3,7 @@ const cors = require('cors');
 const app = express();
 const port = 3000;
 app.use(cors());
-app.get('/', (req, res) => { 
+app.get('/api/whoami', (req, res) => { 
     console.log(req.headers);
     const header_Parser = {
         "ipaddress": req.ip,
